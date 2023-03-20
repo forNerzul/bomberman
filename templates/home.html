@@ -1,42 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-  </head>
-  <body>
-    <h1>Home</h1>
-    <div id="messages"></div>
-    <form>
-      <input id="message_input" type="text" />
-      <input type="submit" value="Send" />
-    </form>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
-      integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
-      crossorigin="anonymous"
-    ></script>
-    <script type="text/javascript" charset="utf-8">
-      var socket = io.connect(
-        "http://" + document.domain + ":" + location.port
-      );
-
-      socket.on("pollo_picante", function (message) {
-        var messages_div = document.getElementById("messages");
-        var message_div = document.createElement("div");
-        message_div.innerHTML = message;
-        messages_div.appendChild(message_div);
-      });
-
-      document.querySelector("form").addEventListener("submit", function (e) {
-        e.preventDefault();
-        var message_input = document.getElementById("message_input");
-        var message = message_input.value;
-        message_input.value = "";
-        socket.emit("pollo_frito", message);
-      });
-    </script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <title>Home</title>
+    </head>
+    <body>
+        <h1>Home</h1>
+        <ul class="flex gap-2 mt-6">
+            <li>
+                <a
+                    class="bg-gray-400 text-white rounded px-6 py-2"
+                    href="{{ url_for('crear_movil') }}"
+                    >Crear Movil</a
+                >
+            </li>
+            <li>
+                <a
+                    class="bg-gray-400 text-white rounded px-6 py-2"
+                    href="{{ url_for('moviles') }}"
+                    >Listar Móviles</a
+                >
+            </li>
+            <li>
+                <a
+                    class="bg-gray-400 text-white rounded px-6 py-2"
+                    href="{{ url_for('disponibles') }}"
+                    >Lista Móviles Disponibles</a
+                >
+            </li>
+            <li>
+                <a
+                    class="bg-gray-400 text-white rounded px-6 py-2"
+                    href="{{ url_for('crear_incidente') }}"
+                    >Crear Incidente</a
+                >
+            </li>
+            <li>
+                <a
+                    class="bg-gray-400 text-white rounded px-6 py-2"
+                    href="{{ url_for('incidentes') }}"
+                    >Listar Incidentes</a
+                >
+            </li>
+        </ul>
+    </body>
 </html>
