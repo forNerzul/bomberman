@@ -36,7 +36,6 @@ def home():
 
 @app.route('/movil', methods = ['GET', 'POST'])
 def crear_movil():
-
     if request.method == 'POST':
         n_movil = request.form['n_movil']
         cuartel = request.form['cuartel']
@@ -45,7 +44,7 @@ def crear_movil():
         db.session.add(movil)
         db.session.commit()
         return redirect(url_for('moviles'))
-    return render_template('','crear_movil.html')
+    return render_template('crear_movil.html')
 
 @app.route('/moviles')
 def moviles():
