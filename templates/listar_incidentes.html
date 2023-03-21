@@ -57,9 +57,11 @@
                             {% endif %}
                         </td>
                         <td class="border px-4 py-2">
+                            <!-- url_for conectamos con la funcion cambiar_estado_incidente-->
                             <form action="{{ url_for('cambiar_estado_incidente') }}" method="POST">
                                 <input class="hidden" value={{incidente.id}} type="text" name="incidente_id" id="incidente_id">
                                 <select name="estado" id="estado">
+                                    <!-- en value va ir cargado el estado de nuestro incidente y al elegir una de las opciones, dentro del name se carga lo que esta en value-->
                                     <option value="en progreso" {% if incidente.estado == 'en progreso' %} selected {% endif %}>En progreso</option>
                                     <option value="finalizado" {% if incidente.estado == "finalizado" %} selected {% endif %}>Finalizado</option>
                                 </select>
