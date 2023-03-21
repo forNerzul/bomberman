@@ -5,46 +5,68 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script src="https://cdn.tailwindcss.com"></script>
+        <script
+            src="https://kit.fontawesome.com/c45d654603.js"
+            crossorigin="anonymous"
+        ></script>
         <title>Home</title>
     </head>
     <body>
-        <h1>Home</h1>
-        <ul class="flex gap-2 mt-6">
-            <li>
-                <a
-                    class="bg-gray-400 text-white rounded px-6 py-2"
-                    href="{{ url_for('crear_movil') }}"
-                    >Crear Movil</a
-                >
-            </li>
-            <li>
-                <a
-                    class="bg-gray-400 text-white rounded px-6 py-2"
-                    href="{{ url_for('moviles') }}"
-                    >Listar Móviles</a
-                >
-            </li>
-            <li>
-                <a
-                    class="bg-gray-400 text-white rounded px-6 py-2"
-                    href="{{ url_for('disponibles') }}"
-                    >Lista Móviles Disponibles</a
-                >
-            </li>
-            <li>
-                <a
-                    class="bg-gray-400 text-white rounded px-6 py-2"
-                    href="{{ url_for('crear_incidente') }}"
-                    >Crear Incidente</a
-                >
-            </li>
-            <li>
-                <a
-                    class="bg-gray-400 text-white rounded px-6 py-2"
-                    href="{{ url_for('incidentes') }}"
-                    >Listar Incidentes</a
-                >
-            </li>
-        </ul>
+        <div class="container mx-auto">
+            <header class="flex flex-col justify-center items-center">
+                <h1 class="text-4xl font-bold">Home</h1>
+                <p class="text-xl">Welcome to the bomberman project</p>
+            </header>
+            <main>
+                <section class="flex gap-9">
+                    <div
+                        class="drop-shadow-md bg-gray-100 hover:drop-shadow-xl hover:text-gray-700 px-2 py-6 rounded-md w-56 h-46 card"
+                    >
+                        <a href="{{url_for('crear_movil')}}">
+                            <div
+                                class="card-title flex flex-col items-center justify-between"
+                            >
+                                <div
+                                    class="drop-shadow-md bg-green-200 rounded-full w-6 h-6 flex font-bold text-gray-600 justify-center items-center relative -top-2 -left-20"
+                                >
+                                    1
+                                </div>
+                                <div class="flex flex-col gap-6 items-center">
+                                    <h2 class="text-2xl font-bold text-center">
+                                        Crear Movil
+                                    </h2>
+                                    <i
+                                        class="fa-solid fa-car-side text-[5.4rem]"
+                                    ></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div
+                        class="drop-shadow-md bg-gray-100 hover:drop-shadow-xl hover:text-gray-700 px-2 py-6 rounded-md w-56 h-46 card"
+                    >
+                        <a href="{{url_for('moviles')}}">
+                            <div
+                                class="card-title flex flex-col items-center justify-between"
+                            >
+                                <div
+                                    class="drop-shadow-md bg-green-200 rounded-full w-6 h-6 flex font-bold text-gray-600 justify-center items-center relative -top-2 -left-20"
+                                >
+                                    2
+                                </div>
+                                <div class="flex flex-col gap-6 items-center">
+                                    <h2 class="text-2xl font-bold text-center">
+                                        Todos los Móviles
+                                    </h2>
+                                    <i
+                                        class="fa-solid fa-car text-[5.4rem]"
+                                    ></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </section>
+            </main>
+        </div>
     </body>
 </html>
