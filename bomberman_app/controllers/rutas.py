@@ -16,7 +16,7 @@ def crear_movil():
         cuartel = request.form['cuartel']
         tipo = request.form['tipo']
         Movil.createAndCommit(n_movil, cuartel, tipo)
-        return redirect(url_for('moviles'))
+        return redirect(url_for('app_views.moviles'))
     return render_template('crear_movil.html')
 
 @app_views.route('/moviles')
@@ -29,7 +29,7 @@ def cambiar_estado(movil_id):
     nuevo_estado = request.form['estado']
     movil = Movil.getOne(movil_id)
     movil.setState(nuevo_estado)
-    return redirect(url_for('moviles'))
+    return redirect(url_for('app_views.moviles'))
 
 @app_views.route('/incidentes/cambiar_estado', methods=['GET', 'POST'])
 def cambiar_estado_incidente():
@@ -42,8 +42,8 @@ def cambiar_estado_incidente():
         if incidente.estado == 'finalizado':
             movil.setState('disponible')
         
-        redirect(url_for('incidentes'))
-    return redirect(url_for('incidentes'))
+        redirect(url_for('app_views.incidentes'))
+    return redirect(url_for('app_views.incidentes'))
 
 @app_views.route('/disponibles' , methods = ['GET', 'POST'])
 def disponibles():
@@ -63,7 +63,7 @@ def crear_incidente():
     n_movil = request.args.get('n_movil', None, type=str)
 
     if n_movil is None:
-        return redirect(url_for('disponibles'))
+        return redirect(url_for('app_views.disponibles'))
     
     if request.method == 'POST':
         operador = request.form['operador']
@@ -79,9 +79,9 @@ def crear_incidente():
             try:
                 movil.setState('en uso')
             finally:
-                return redirect(url_for('incidentes'))
+                return redirect(url_for('app_views.incidentes'))
         except:
-            return redirect(url_for('disponibles'))
+            return redirect(url_for('app_views.disponibles'))
     return render_template('crear_incidente.html', n_movil=n_movil)
 
 

@@ -57,7 +57,7 @@
                             {% endif %}
                         </td>
                         <td class="border px-4 py-2">
-                            <form action="{{ url_for('cambiar_estado_incidente') }}" method="POST">
+                            <form action="{{ url_for('app_views.cambiar_estado_incidente') }}" method="POST">
                                 <input class="hidden" value={{incidente.id}} type="text" name="incidente_id" id="incidente_id">
                                 <select name="estado" id="estado">
                                     <option value="en progreso" {% if incidente.estado == 'en progreso' %} selected {% endif %}>En progreso</option>

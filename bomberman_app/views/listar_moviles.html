@@ -40,7 +40,7 @@
               {% endif %}
             </td>
             <td class="border px-4 py-2">
-              <form action="{{ url_for('cambiar_estado', movil_id=movil.id) }}" method="POST">
+              <form action="{{ url_for('app_views.cambiar_estado', movil_id=movil.id) }}" method="POST">
                 <select name="estado">
                   <option value="disponible" {% if movil.estado == "disponible" %} selected {% endif %}>Disponible</option>
                   <option value="en uso" {% if movil.estado == "en uso" %} selected {% endif %}>En uso</option>
