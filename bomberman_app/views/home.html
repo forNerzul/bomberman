@@ -12,13 +12,13 @@
         <title>Home</title>
     </head>
     <body>
-        <div class="container mx-auto">
+        <div class="container mx-auto max-w-2xl">
             <header class="flex flex-col justify-center items-center">
                 <h1 class="text-4xl font-bold">Home</h1>
                 <p class="text-xl">Welcome to the bomberman project</p>
             </header>
             <main>
-                <section class="flex gap-9">
+                <section class="flex gap-9 mt-9">
                     <div
                         class="drop-shadow-md bg-gray-100 hover:drop-shadow-xl hover:text-gray-700 px-2 py-6 rounded-md w-56 h-46 card"
                     >
@@ -60,6 +60,29 @@
                                     </h2>
                                     <i
                                         class="fa-solid fa-car text-[5.4rem]"
+                                    ></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div
+                        class="drop-shadow-md bg-gray-100 hover:drop-shadow-xl hover:text-gray-700 px-2 py-6 rounded-md w-56 h-46 card"
+                    >
+                        <a href="{{url_for('app_views.disponibles')}}">
+                            <div
+                                class="card-title flex flex-col items-center justify-between"
+                            >
+                                <div
+                                    class="drop-shadow-md bg-green-200 rounded-full w-6 h-6 flex font-bold text-gray-600 justify-center items-center relative -top-2 -left-20"
+                                >
+                                    3
+                                </div>
+                                <div class="flex flex-col gap-6 items-center">
+                                    <h2 class="text-2xl font-bold text-center">
+                                        Nuevo Incidente
+                                    </h2>
+                                    <i
+                                        class="fa-solid fa-poo text-[5.4rem]"
                                     ></i>
                                 </div>
                             </div>
