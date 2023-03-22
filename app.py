@@ -8,6 +8,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///base_de_datos.db'
 app.config['SECRET_KEY'] = 'pollo_frito'
 db = SQLAlchemy(app)
 
+# change temoplate folder
+app.template_folder = 'views'
 
 #modelos
 class Movil(db.Model):
@@ -17,6 +19,39 @@ class Movil(db.Model):
     tipo = db.Column(db.String(80), unique=False, nullable=False)
     estado = db.Column(db.String(80), unique=False, default='disponible', nullable=True)
 
+    def getAll():
+        return Movil.query.all()
+    
+    def getOne(id):
+        return Movil.query.get_or_404(id)
+    
+    def getDisponibles():
+        return Movil.query.filter_by(estado='disponible').all()
+    
+    def getDisponiblesByCuartel(cuartel):
+        return Movil.query.filter_by(estado='disponible').filter(Movil.cuartel == cuartel).all()
+    
+    def setState(self, state):
+        self.estado = state
+        db.session.commit()
+    
+    def getAllCuarteles():
+        cuarteles = ['Todos']
+        moviles = Movil.query.filter_by(estado='disponible').all()
+        for movil in moviles:
+            if movil.cuartel not in cuarteles:
+                cuarteles.append(movil.cuartel)
+        return cuarteles
+    
+    def createAndCommit(n_movil, cuartel, tipo):
+        movil = Movil(n_movil=n_movil, cuartel=cuartel, tipo=tipo)
+        db.session.add(movil)
+        db.session.commit()
+
+    def getMovilByN_movil(n_movil):
+        movil = Movil.query.filter_by(n_movil=n_movil).first()
+        return movil
+        
 class Incidente(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     operador = db.Column(db.String(80), unique=False, nullable=False)
@@ -29,6 +64,24 @@ class Incidente(db.Model):
     observaciones = db.Column(db.String(80), unique=False, nullable=False)
     estado = db.Column(db.String(80), unique=False, default="en progreso", nullable=False)
 
+    def getAll():
+        return Incidente.query.all()
+    
+    def getOne(id):
+        return Incidente.query.get_or_404(id)
+    
+    def setState(self, state):
+        self.estado = state
+        db.session.commit()
+
+    def createAndCommit(operador, movil_id, servicio, tipo_servicio, salida, llegada, lugar, observaciones):
+        incidente = Incidente(operador=operador, movil_id=movil_id, servicio=servicio, tipo_servicio=tipo_servicio, salida=salida, llegada=llegada, lugar=lugar, observaciones=observaciones)
+        db.session.add(incidente)
+        db.session.commit()
+
+
+
+
 
 @app.route('/')
 def home():
@@ -40,55 +93,46 @@ def crear_movil():
         n_movil = request.form['n_movil']
         cuartel = request.form['cuartel']
         tipo = request.form['tipo']
-        movil = Movil(n_movil=n_movil, cuartel=cuartel, tipo=tipo)
-        db.session.add(movil)
-        db.session.commit()
+        Movil.createAndCommit(n_movil, cuartel, tipo)
         return redirect(url_for('moviles'))
     return render_template('crear_movil.html')
 
 @app.route('/moviles')
 def moviles():
-    moviles = Movil.query.all()
+    moviles = Movil.getAll()
     return render_template('listar_moviles.html', moviles=moviles)
 
 @app.route('/moviles/<int:movil_id>/cambiar_estado', methods=['POST'])
 def cambiar_estado(movil_id):
-    movil = Movil.query.get_or_404(movil_id)
     nuevo_estado = request.form['estado']
-    movil.estado = nuevo_estado
-    db.session.commit()
+    movil = Movil.getOne(movil_id)
+    movil.setState(nuevo_estado)
     return redirect(url_for('moviles'))
 
 @app.route('/incidentes/cambiar_estado', methods=['GET', 'POST'])
 def cambiar_estado_incidente():
     if request.method == 'POST':
         incidente_id = request.form['incidente_id']
-        incidente = Incidente.query.get_or_404(incidente_id)
         nuevo_estado = request.form['estado']
-        incidente.estado = nuevo_estado
-        db.session.commit()
-        if nuevo_estado == 'finalizado':
-            movil = Movil.query.get_or_404(incidente.movil_id)
-            movil.estado = 'disponible'
-            db.session.commit()
+        incidente = Incidente.getOne(incidente_id)
+        incidente.setState(nuevo_estado)
+        movil = Movil.getOne(incidente.movil_id)
+        if incidente.estado == 'finalizado':
+            movil.setState('disponible')
         
         redirect(url_for('incidentes'))
     return redirect(url_for('incidentes'))
 
-@app.route('/disponibles')
+@app.route('/disponibles' , methods = ['GET', 'POST'])
 def disponibles():
     cuartel = request.args.get('cuartel', 'Todos', type=str)
     
     if cuartel == 'Todos':
-        moviles = Movil.query.filter_by(estado='disponible').all()
+        moviles = Movil.getDisponibles()
     else:
-        moviles = Movil.query.filter_by(estado='disponible').filter(Movil.cuartel == cuartel).all()
+        moviles = Movil.getDisponiblesByCuartel(cuartel)
     
-    moviles_filter = Movil.query.filter_by(estado='disponible').all()
-    cuarteles = ['Todos']
-    for movil in moviles_filter:
-        if movil.cuartel not in cuarteles:
-            cuarteles.append(movil.cuartel)
+    cuarteles = Movil.getAllCuarteles()
 
     return render_template('listar_moviles_disponibles.html', moviles=moviles, cuarteles=cuarteles)
 
@@ -98,7 +142,6 @@ def crear_incidente():
 
     if n_movil is None:
         return redirect(url_for('disponibles'))
-    movil_id = Movil.query.filter_by(n_movil=n_movil).first().id
     
     if request.method == 'POST':
         operador = request.form['operador']
@@ -108,23 +151,21 @@ def crear_incidente():
         llegada = datetime.strptime(request.form['llegada'], '%Y-%m-%dT%H:%M')
         lugar = request.form['lugar']
         observaciones = request.form['observaciones']
-        try :
-            movil = Movil.query.get_or_404(movil_id)
-            movil.estado = 'en uso'
-            db.session.commit()
+        try:
+            movil = Movil.getMovilByN_movil(n_movil)
+            Incidente.createAndCommit(operador, movil.id, servicio, tipo_servicio, salida, llegada, lugar, observaciones)
+            try:
+                movil.setState('en uso')
+            finally:
+                return redirect(url_for('incidentes'))
         except:
-            redirect(url_for('disponibles'))
-
-        incidente = Incidente(operador=operador, movil_id=movil_id, servicio=servicio, tipo_servicio=tipo_servicio, salida=salida, llegada=llegada, lugar=lugar, observaciones=observaciones)
-        db.session.add(incidente)
-        db.session.commit()
-        return redirect(url_for('incidentes'))
+            return redirect(url_for('disponibles'))
     return render_template('crear_incidente.html', n_movil=n_movil)
 
 
 @app.route('/incidentes')
 def incidentes():
-    incidentes = Incidente.query.all()
+    incidentes = Incidente.getAll()
     return render_template('listar_incidentes.html', incidentes=incidentes)
 
 with app.app_context():
