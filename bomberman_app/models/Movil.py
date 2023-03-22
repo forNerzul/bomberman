@@ -1,4 +1,4 @@
-from config.db_instance import db
+from bomberman_app.config import db
 
 class Movil(db.Model):
     id = db.Column(db.Integer, primary_key=True)

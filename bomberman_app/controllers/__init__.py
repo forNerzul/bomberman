@@ -1,1 +1,1 @@
-from . import *
+from .rutas import app_views

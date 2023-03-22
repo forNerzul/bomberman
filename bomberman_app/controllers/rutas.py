@@ -1,14 +1,15 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, Blueprint
 from datetime import datetime
-from controllers import *
-from models import Movil, Incidente
-from app import app
+from bomberman_app.models import Movil, Incidente
 
-@app.route('/')
+app_views = Blueprint('app_views', __name__,
+                        template_folder='../views')
+
+@app_views.route('/')
 def home():
     return render_template('home.html')
 
-@app.route('/movil', methods = ['GET', 'POST'])
+@app_views.route('/movil', methods = ['GET', 'POST'])
 def crear_movil():
     if request.method == 'POST':
         n_movil = request.form['n_movil']
@@ -18,19 +19,19 @@ def crear_movil():
         return redirect(url_for('moviles'))
     return render_template('crear_movil.html')
 
-@app.route('/moviles')
+@app_views.route('/moviles')
 def moviles():
     moviles = Movil.getAll()
     return render_template('listar_moviles.html', moviles=moviles)
 
-@app.route('/moviles/<int:movil_id>/cambiar_estado', methods=['POST'])
+@app_views.route('/moviles/<int:movil_id>/cambiar_estado', methods=['POST'])
 def cambiar_estado(movil_id):
     nuevo_estado = request.form['estado']
     movil = Movil.getOne(movil_id)
     movil.setState(nuevo_estado)
     return redirect(url_for('moviles'))
 
-@app.route('/incidentes/cambiar_estado', methods=['GET', 'POST'])
+@app_views.route('/incidentes/cambiar_estado', methods=['GET', 'POST'])
 def cambiar_estado_incidente():
     if request.method == 'POST':
         incidente_id = request.form['incidente_id']
@@ -44,7 +45,7 @@ def cambiar_estado_incidente():
         redirect(url_for('incidentes'))
     return redirect(url_for('incidentes'))
 
-@app.route('/disponibles' , methods = ['GET', 'POST'])
+@app_views.route('/disponibles' , methods = ['GET', 'POST'])
 def disponibles():
     cuartel = request.args.get('cuartel', 'Todos', type=str)
     
@@ -57,7 +58,7 @@ def disponibles():
 
     return render_template('listar_moviles_disponibles.html', moviles=moviles, cuarteles=cuarteles)
 
-@app.route('/incidente', methods = ['GET', 'POST'])
+@app_views.route('/incidente', methods = ['GET', 'POST'])
 def crear_incidente():
     n_movil = request.args.get('n_movil', None, type=str)
 
@@ -84,7 +85,7 @@ def crear_incidente():
     return render_template('crear_incidente.html', n_movil=n_movil)
 
 
-@app.route('/incidentes')
+@app_views.route('/incidentes')
 def incidentes():
     incidentes = Incidente.getAll()
     return render_template('listar_incidentes.html', incidentes=incidentes)
